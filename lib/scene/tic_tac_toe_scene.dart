@@ -25,9 +25,10 @@ class TicTacToe3DScene {
   TicTacToe3DScene({required this.gameController});
 
   Future<void> load() async {
-    // 1. Initialize static resources
+    // 1. Initialize static resources and load character GLBs
     await Scene.initializeStaticResources();
     PieceBuilder.initialize();
+    await PieceBuilder.loadCharacterGlbs();
 
     // 2. Configure Stylized / Showcase Look & Post-Processing
     scene.environmentSettings = EnvironmentSettings(

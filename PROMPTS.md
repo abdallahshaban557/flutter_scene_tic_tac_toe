@@ -97,3 +97,12 @@ dump all of my prompts to a markdown file here
 ```text
 when I click and X or O come down - the face should be facing forward and not backwards like it is now
 ```
+
+---
+
+### Prompt 8
+*Timestamp: 2026-08-19 21:00:23 (-07:00)*
+
+```text
+make the characters with the X and O be individual glbs and have them be in the scene
+```

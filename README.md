@@ -1,4 +1,4 @@
-# flutter_scene_checking_skills
+# flutter_scene_tic_tac_toe
 
 A new Flutter project.
 

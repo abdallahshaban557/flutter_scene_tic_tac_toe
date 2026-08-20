@@ -6,7 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_scene_checking_skills/game/game_controller.dart';
+import 'package:flutter_scene_tic_tac_toe/game/game_controller.dart';
 
 void main() {
   test('GameController marks moves and identifies horizontal win', () {

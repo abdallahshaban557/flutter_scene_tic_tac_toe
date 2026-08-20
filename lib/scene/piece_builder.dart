@@ -38,6 +38,22 @@ class PieceBuilder {
   static late final PhysicallyBasedMaterial crumbMaterialO;
 
   static bool _initialized = false;
+  static Node? _xGlbTemplate;
+  static Node? _oGlbTemplate;
+
+  static Future<void> loadCharacterGlbs() async {
+    initialize();
+    try {
+      _xGlbTemplate = await Node.fromGlbAsset('assets/x_character.glb');
+    } catch (e) {
+      // Fallback to procedural if asset fails to load
+    }
+    try {
+      _oGlbTemplate = await Node.fromGlbAsset('assets/o_character.glb');
+    } catch (e) {
+      // Fallback to procedural if asset fails to load
+    }
+  }
 
   static void initialize() {
     if (_initialized) return;
@@ -196,6 +212,12 @@ class PieceBuilder {
 
   /// Creates a stylized 3D X Character Node with animated mouth & eyes
   static Node createXCharacter({bool isWinning = false}) {
+    if (_xGlbTemplate != null) {
+      final clone = _xGlbTemplate!.clone(recursive: true);
+      clone.name = "X_Root";
+      return clone;
+    }
+
     initialize();
     final xRoot = Node(name: "X_Root");
 
@@ -225,6 +247,12 @@ class PieceBuilder {
 
   /// Creates a stylized 3D O Character Node with animated mouth & eyes
   static Node createOCharacter({bool isWinning = false}) {
+    if (_oGlbTemplate != null) {
+      final clone = _oGlbTemplate!.clone(recursive: true);
+      clone.name = "O_Root";
+      return clone;
+    }
+
     initialize();
     final oRoot = Node(name: "O_Root");
 

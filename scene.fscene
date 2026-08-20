@@ -1,0 +1,58 @@
+{
+  "fscene": 3,
+  "documentId": "P3G3TW17RD3K71YE84456MG5QM",
+  "stage": {
+    "environmentRef": "env:YVXD0GG000000"
+  },
+  "resources": {
+    "env:YVXD0GG000000": {
+      "kind": "environment",
+      "name": "Environment",
+      "environment": {
+        "type": "studio"
+      },
+      "environmentIntensity": 1.0,
+      "exposure": 1.0,
+      "toneMapping": "pbrNeutral",
+      "effects": {},
+      "skybox": {
+        "source": {
+          "type": "physical",
+          "sunDirection": [0.4000000059604645, 0.5, 0.6000000238418579],
+          "sunAngularRadius": 0.0175,
+          "rayleighCoefficient": 2.0,
+          "rayleighColor": [0.25999999046325684, 0.4099999964237213, 0.5799999833106995],
+          "mieCoefficient": 0.005,
+          "mieEccentricity": 0.8,
+          "mieColor": [0.6899999976158142, 0.7300000190734863, 0.8100000023841858],
+          "turbidity": 10.0,
+          "groundColor": [0.11999999731779099, 0.11999999731779099, 0.12999999523162842],
+          "energy": 1.0
+        },
+        "intensity": 1.0
+      },
+      "skyEnvironment": {
+        "source": {
+          "type": "physical",
+          "sunDirection": [0.4000000059604645, 0.5, 0.6000000238418579],
+          "sunAngularRadius": 0.0175,
+          "rayleighCoefficient": 2.0,
+          "rayleighColor": [0.25999999046325684, 0.4099999964237213, 0.5799999833106995],
+          "mieCoefficient": 0.005,
+          "mieEccentricity": 0.8,
+          "mieColor": [0.6899999976158142, 0.7300000190734863, 0.8100000023841858],
+          "turbidity": 10.0,
+          "groundColor": [0.11999999731779099, 0.11999999731779099, 0.12999999523162842],
+          "energy": 1.0
+        },
+        "refresh": "manual",
+        "intervalSeconds": 1.0,
+        "faceResolution": 128,
+        "equirectWidth": 512,
+        "sunLight": {}
+      }
+    }
+  },
+  "nodes": {},
+  "roots": []
+}

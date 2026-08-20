@@ -1,6 +1,6 @@
 {
-    "name": "flutter_scene_checking_skills",
-    "short_name": "flutter_scene_checking_skills",
+    "name": "flutter_scene_tic_tac_toe",
+    "short_name": "flutter_scene_tic_tac_toe",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

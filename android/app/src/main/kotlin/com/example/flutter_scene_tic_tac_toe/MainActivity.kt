@@ -1,4 +1,4 @@
-package com.example.flutter_scene_checking_skills
+package com.example.flutter_scene_tic_tac_toe
 
 import io.flutter.embedding.android.FlutterActivity
 
