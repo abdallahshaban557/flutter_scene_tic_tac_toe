@@ -94,8 +94,8 @@ class TicTacToe3DScene {
       _onWin(winResult, loserIndices);
     };
 
-    gameController.onChompStep = (winnerIndex, loserIndex, onChompDone) {
-      _executeChomp(winnerIndex, loserIndex, onChompDone);
+    gameController.onMultiChompStep = (winnerToLoserPairs, onWaveDone) {
+      _executeMultiChomp(winnerToLoserPairs, onWaveDone);
     };
 
     gameController.onFeastCompleted = () {
@@ -146,62 +146,84 @@ class TicTacToe3DScene {
     }
   }
 
-  void _executeChomp(int winnerIndex, int loserIndex, VoidCallback onChompDone) {
-    final winnerPiece = _activePieces[winnerIndex];
-    final loserPiece = _activePieces[loserIndex];
-
-    if (winnerPiece == null || loserPiece == null) {
-      onChompDone();
+  void _executeMultiChomp(Map<int, int> pairs, VoidCallback onWaveDone) {
+    if (pairs.isEmpty) {
+      onWaveDone();
       return;
     }
 
-    final targetPos = PieceBuilder.cellToWorldPosition(loserIndex);
+    int remaining = pairs.length;
+    bool isWaveDoneCalled = false;
 
-    // Winner moves toward loser
-    winnerPiece.startEatingTrip(targetPos, () {
-      // Arrived at loser position!
-      // Loser piece starts trembling and shrinking into winner's mouth
-      loserPiece.startBeingEaten(winnerPiece.rootNode.position);
+    void checkWaveDone() {
+      remaining--;
+      if (remaining <= 0 && !isWaveDoneCalled) {
+        isWaveDoneCalled = true;
+        onWaveDone();
+      }
+    }
 
-      // Spawn burst crumb particles
-      final particles = PieceBuilder.createChompParticles(
-        targetPos,
-        loserPiece.pieceType == CellState.x,
-      );
-      final rng = math.Random();
-      for (final p in particles) {
-        _particlesRoot.add(p);
-        final vel = vm.Vector3(
-          (rng.nextDouble() - 0.5) * 4.0,
-          2.5 + rng.nextDouble() * 3.5,
-          (rng.nextDouble() - 0.5) * 4.0,
-        );
-        _activeParticles.add(AnimatedCrumbParticle(
-          node: p,
-          velocity: vel,
-          maxLifetime: 0.8 + rng.nextDouble() * 0.4,
-        ));
+    for (final entry in pairs.entries) {
+      final winnerIndex = entry.key;
+      final loserIndex = entry.value;
+      final winnerPiece = _activePieces[winnerIndex];
+      final loserPiece = _activePieces[loserIndex];
+
+      if (winnerPiece == null || loserPiece == null) {
+        checkWaveDone();
+        continue;
       }
 
-      // Winner snaps mouth shut in a chomp
-      winnerPiece.startChomp(onChompFinished: () {
-        // Remove loser piece from 3D hierarchy
-        _piecesRoot.remove(loserPiece.rootNode);
-        _activePieces.remove(loserIndex);
+      final targetPos = PieceBuilder.cellToWorldPosition(loserIndex);
 
-        onChompDone();
+      // Each winner moves toward its closest paired loser
+      winnerPiece.startEatingTrip(targetPos, () {
+        // Arrived at loser position!
+        // Loser piece starts trembling and shrinking into winner's mouth
+        loserPiece.startBeingEaten(winnerPiece.rootNode.position);
+
+        // Spawn burst crumb particles
+        final particles = PieceBuilder.createChompParticles(
+          targetPos,
+          loserPiece.pieceType == CellState.x,
+        );
+        final rng = math.Random();
+        for (final p in particles) {
+          _particlesRoot.add(p);
+          final vel = vm.Vector3(
+            (rng.nextDouble() - 0.5) * 4.0,
+            2.5 + rng.nextDouble() * 3.5,
+            (rng.nextDouble() - 0.5) * 4.0,
+          );
+          _activeParticles.add(AnimatedCrumbParticle(
+            node: p,
+            velocity: vel,
+            maxLifetime: 0.8 + rng.nextDouble() * 0.4,
+          ));
+        }
+
+        // Winner snaps mouth shut in a chomp
+        winnerPiece.startChomp(onChompFinished: () {
+          // Remove loser piece from 3D hierarchy
+          _piecesRoot.remove(loserPiece.rootNode);
+          _activePieces.remove(loserIndex);
+
+          checkWaveDone();
+        });
       });
-    });
+    }
   }
 
   void _onFeastDone() {
-    // Winner returns back to base position
-    final winnerIndex = gameController.winResult?.winningIndices[1] ?? 4;
-    final winnerPiece = _activePieces[winnerIndex];
-    if (winnerPiece != null) {
-      winnerPiece.startReturnHome(() {
-        winnerPiece.state = PieceAnimState.celebrating;
-      });
+    // All active winning pieces return back to their home positions and celebrate!
+    final winIndices = gameController.winResult?.winningIndices ?? [];
+    for (final winnerIdx in winIndices) {
+      final winnerPiece = _activePieces[winnerIdx];
+      if (winnerPiece != null) {
+        winnerPiece.startReturnHome(() {
+          winnerPiece.state = PieceAnimState.celebrating;
+        });
+      }
     }
   }
 

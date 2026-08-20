@@ -46,7 +46,7 @@ class GameController extends ChangeNotifier {
   // Callback to trigger 3D animations in scene
   void Function(int index, CellState piece)? onPiecePlaced;
   void Function(WinResult winResult, List<int> loserIndices)? onWinTriggered;
-  void Function(int winnerIndex, int loserIndex, VoidCallback onChompDone)? onChompStep;
+  void Function(Map<int, int> winnerToLoserPairs, VoidCallback onWaveDone)? onMultiChompStep;
   void Function()? onFeastCompleted;
 
   void setGameMode(GameMode newMode) {
@@ -119,7 +119,7 @@ class GameController extends ChangeNotifier {
 
     // Trigger AI move if single player
     if (_mode == GameMode.singlePlayer && _currentTurn == CellState.o) {
-      Future.delayed(const Duration(milliseconds: 450), () {
+      Future.delayed(const Duration(milliseconds: 350), () {
         if (_status == GameStatus.playing && _currentTurn == CellState.o) {
           _triggerAiMove();
         }
@@ -181,8 +181,8 @@ class GameController extends ChangeNotifier {
 
     onWinTriggered?.call(win, _remainingLoserIndices);
 
-    // After celebration jump, start the eating feast!
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    // After celebration jump, start the multi-winner eating feast!
+    Future.delayed(const Duration(milliseconds: 1000), () {
       if (_status == GameStatus.winningCelebration) {
         _startEatingStep();
       }
@@ -203,32 +203,78 @@ class GameController extends ChangeNotifier {
     }
 
     _status = GameStatus.eatingLosers;
-    // Primary winner piece is the center of the winning line, or the middle of line
-    _eatingWinnerIndex = _winResult!.winningIndices.contains(4)
-        ? 4
-        : _winResult!.winningIndices[1];
+    final winner = _winResult!.winner;
 
-    // Target the first remaining loser piece
-    _currentlyTargetedLoserIndex = _remainingLoserIndices.first;
-    final winnerName = _winResult!.winner == CellState.x ? "X" : "O";
-    final loserName = _winResult!.winner == CellState.x ? "O" : "X";
-    _statusMessage = "🍴 $winnerName is chomping $loserName!";
+    // Collect all winner indices on the board
+    final allWinnerIndices = <int>[];
+    for (final idx in _winResult!.winningIndices) {
+      if (!allWinnerIndices.contains(idx)) allWinnerIndices.add(idx);
+    }
+    for (int i = 0; i < 9; i++) {
+      if (_board[i] == winner && !allWinnerIndices.contains(i)) {
+        allWinnerIndices.add(i);
+      }
+    }
+
+    // Compute pairwise closest match between winners and losers
+    final pairs = _computeClosestPairs(allWinnerIndices, _remainingLoserIndices);
+
+    final winnerName = winner == CellState.x ? "X" : "O";
+    final loserName = winner == CellState.x ? "O" : "X";
+    _statusMessage = "🍴 ${winnerName}s are devouring their closest ${loserName}s!";
     notifyListeners();
 
-    onChompStep?.call(_eatingWinnerIndex!, _currentlyTargetedLoserIndex!, () {
-      // Chomp finished for this piece!
-      _remainingLoserIndices.remove(_currentlyTargetedLoserIndex);
-      _board[_currentlyTargetedLoserIndex!] = CellState.empty;
-      _currentlyTargetedLoserIndex = null;
+    onMultiChompStep?.call(pairs, () {
+      // Wave finished: remove eaten losers
+      for (final loserIdx in pairs.values) {
+        _remainingLoserIndices.remove(loserIdx);
+        _board[loserIdx] = CellState.empty;
+      }
       notifyListeners();
 
-      // Short pause before chomping the next one
-      Future.delayed(const Duration(milliseconds: 400), () {
+      // Pause briefly, then check if any remaining losers need a second chomp
+      Future.delayed(const Duration(milliseconds: 350), () {
         if (_status == GameStatus.eatingLosers) {
           _startEatingStep();
         }
       });
     });
+  }
+
+  Map<int, int> _computeClosestPairs(List<int> winners, List<int> losers) {
+    final pairs = <int, int>{};
+    final availWinners = List<int>.from(winners);
+    final availLosers = List<int>.from(losers);
+
+    while (availWinners.isNotEmpty && availLosers.isNotEmpty) {
+      double minDistance = double.infinity;
+      int bestW = -1;
+      int bestL = -1;
+
+      for (final w in availWinners) {
+        final wR = w ~/ 3;
+        final wC = w % 3;
+        for (final l in availLosers) {
+          final lR = l ~/ 3;
+          final lC = l % 3;
+          final distSq = (wR - lR) * (wR - lR) + (wC - lC) * (wC - lC);
+          if (distSq < minDistance) {
+            minDistance = distSq.toDouble();
+            bestW = w;
+            bestL = l;
+          }
+        }
+      }
+
+      if (bestW != -1 && bestL != -1) {
+        pairs[bestW] = bestL;
+        availWinners.remove(bestW);
+        availLosers.remove(bestL);
+      } else {
+        break;
+      }
+    }
+    return pairs;
   }
 
   // AI Minimax logic with strategic heuristic
