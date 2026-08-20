@@ -205,7 +205,6 @@ class _TicTacToeGameScreenState extends State<TicTacToeGameScreen> {
               return GameOverlay(
                 controller: _gameController,
                 onNewGame: _handleNewGame,
-                onResetCamera: _handleResetCamera,
                 onResetScores: _handleResetScores,
                 onCellTapped: _handleCellTapped,
               );

@@ -4,7 +4,6 @@ import '../game/game_controller.dart';
 class GameOverlay extends StatelessWidget {
   final GameController controller;
   final VoidCallback onNewGame;
-  final VoidCallback onResetCamera;
   final VoidCallback onResetScores;
   final ValueChanged<int> onCellTapped;
 
@@ -12,7 +11,6 @@ class GameOverlay extends StatelessWidget {
     super.key,
     required this.controller,
     required this.onNewGame,
-    required this.onResetCamera,
     required this.onResetScores,
     required this.onCellTapped,
   });
@@ -450,36 +448,27 @@ class GameOverlay extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Reset Camera
-          IconButton(
-            icon: const Icon(Icons.center_focus_strong, color: Colors.white70),
-            tooltip: "Reset Camera Angle",
-            onPressed: onResetCamera,
-          ),
-
           // New Game Button
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE94560),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 4,
+          Expanded(
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE94560),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                icon: const Icon(Icons.refresh, size: 18),
-                label: const Text(
-                  "NEW GAME",
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.0),
-                ),
-                onPressed: onNewGame,
+                elevation: 4,
               ),
+              icon: const Icon(Icons.refresh, size: 18),
+              label: const Text(
+                "NEW GAME",
+                style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.0),
+              ),
+              onPressed: onNewGame,
             ),
           ),
+          const SizedBox(width: 12),
 
           // Reset Scores
           IconButton(
