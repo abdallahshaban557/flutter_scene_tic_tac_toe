@@ -207,7 +207,6 @@ class _TicTacToeGameScreenState extends State<TicTacToeGameScreen> {
                 controller: _gameController,
                 onNewGame: _handleNewGame,
                 onResetScores: _handleResetScores,
-                onCellTapped: _handleCellTapped,
               );
             },
           ),

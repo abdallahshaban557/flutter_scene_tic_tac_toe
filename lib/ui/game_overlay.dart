@@ -5,14 +5,12 @@ class GameOverlay extends StatelessWidget {
   final GameController controller;
   final VoidCallback onNewGame;
   final VoidCallback onResetScores;
-  final ValueChanged<int> onCellTapped;
 
   const GameOverlay({
     super.key,
     required this.controller,
     required this.onNewGame,
     required this.onResetScores,
-    required this.onCellTapped,
   });
 
   @override
@@ -37,14 +35,7 @@ class GameOverlay extends StatelessWidget {
             ),
           ),
 
-          // 2. Corner Mini-Board HUD for quick visual reference & secondary tap
-          Positioned(
-            right: 16,
-            bottom: 80,
-            child: _buildMiniBoardHUD(context),
-          ),
-
-          // 3. Bottom Controls Bar
+          // 2. Bottom Controls Bar
           Positioned(
             bottom: 16,
             left: 16,
@@ -330,106 +321,6 @@ class GameOverlay extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiniBoardHUD(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF16213E).withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "GRID MAP",
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.0,
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 84,
-            height: 84,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
-              ),
-              itemCount: 9,
-              itemBuilder: (context, index) {
-                final cell = controller.board[index];
-                final isWinner =
-                    controller.winResult?.winningIndices.contains(index) ?? false;
-                final isTargetLoser =
-                    controller.currentlyTargetedLoserIndex == index;
-
-                Color cellBg = const Color(0xFF1A1A2E);
-                Widget? content;
-
-                if (cell == CellState.x) {
-                  content = const Text(
-                    "X",
-                    style: TextStyle(
-                      color: Color(0xFFFF4D6D),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  );
-                } else if (cell == CellState.o) {
-                  content = const Text(
-                    "O",
-                    style: TextStyle(
-                      color: Color(0xFF00E5FF),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  );
-                }
-
-                if (isWinner) {
-                  cellBg = const Color(0xFF57CC99).withValues(alpha: 0.3);
-                } else if (isTargetLoser) {
-                  cellBg = Colors.red.withValues(alpha: 0.35);
-                }
-
-                return InkWell(
-                  onTap: () => onCellTapped(index),
-                  borderRadius: BorderRadius.circular(4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: cellBg,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: isWinner
-                            ? const Color(0xFF57CC99)
-                            : isTargetLoser
-                                ? Colors.redAccent
-                                : Colors.white10,
-                      ),
-                    ),
-                    child: Center(child: content),
-                  ),
-                );
-              },
             ),
           ),
         ],
