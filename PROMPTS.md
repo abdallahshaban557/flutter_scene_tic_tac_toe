@@ -88,3 +88,12 @@ when the O or X wins - I want each one to eat the closest X or O to it - and not
 ```text
 dump all of my prompts to a markdown file here
 ```
+
+---
+
+### Prompt 7
+*Timestamp: 2026-08-19 20:53:28 (-07:00)*
+
+```text
+when I click and X or O come down - the face should be facing forward and not backwards like it is now
+```

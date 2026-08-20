@@ -212,11 +212,11 @@ class PieceBuilder {
     upperJawNode.addAll([limb1, limb2]);
     xRoot.add(upperJawNode);
 
-    // Eyes attached to the front of X (+Z)
+    // Eyes attached to the front of X (-Z facing camera)
     final eyeLeftNode = _createEyeNode(isLeft: true);
     final eyeRightNode = _createEyeNode(isLeft: false);
-    eyeLeftNode.position = vm.Vector3(-0.16, 0.22, 0.16);
-    eyeRightNode.position = vm.Vector3(0.16, 0.22, 0.16);
+    eyeLeftNode.position = vm.Vector3(-0.16, 0.22, -0.16);
+    eyeRightNode.position = vm.Vector3(0.16, 0.22, -0.16);
 
     xRoot.addAll([eyeLeftNode, eyeRightNode]);
 
@@ -228,7 +228,7 @@ class PieceBuilder {
     initialize();
     final oRoot = Node(name: "O_Root");
 
-    // Main Torus Body (oriented in XY plane facing +Z)
+    // Main Torus Body (oriented in XY plane facing forward)
     final bodyNode = Node(name: "O_Body");
     final torusMeshNode = Node(
       mesh: Mesh(oBodyGeometry, isWinning ? oWinningMaterial : oMaterial),
@@ -237,11 +237,11 @@ class PieceBuilder {
     bodyNode.add(torusMeshNode);
     oRoot.add(bodyNode);
 
-    // Big expressive cartoon eyes at the top (+Y, +Z)
+    // Big expressive cartoon eyes at the top (-Z facing camera)
     final eyeLeftNode = _createEyeNode(isLeft: true, eyeScale: 1.1);
     final eyeRightNode = _createEyeNode(isLeft: false, eyeScale: 1.1);
-    eyeLeftNode.position = vm.Vector3(-0.18, 0.32, 0.14);
-    eyeRightNode.position = vm.Vector3(0.18, 0.32, 0.14);
+    eyeLeftNode.position = vm.Vector3(-0.18, 0.32, -0.14);
+    eyeRightNode.position = vm.Vector3(0.18, 0.32, -0.14);
 
     oRoot.addAll([eyeLeftNode, eyeRightNode]);
 
@@ -256,10 +256,10 @@ class PieceBuilder {
       mesh: Mesh(eyeWhiteGeometry, eyeWhiteMaterial),
     )..scale = vm.Vector3.all(eyeScale);
 
-    // Pupil
+    // Pupil facing forward towards viewer (-Z)
     final pupilNode = Node(
       mesh: Mesh(pupilGeometry, pupilMaterial),
-    )..position = vm.Vector3(0, 0, 0.07 * eyeScale);
+    )..position = vm.Vector3(0, 0, -0.07 * eyeScale);
 
     eyeRoot.addAll([whiteNode, pupilNode]);
     return eyeRoot;

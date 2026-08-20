@@ -195,17 +195,17 @@ class AnimatedPiece {
     );
     rootNode.position = currentPos;
 
-    // Face movement direction
+    // Face movement direction (-Z is forward facing viewer)
     final dir = moveTargetPos - moveStartPos;
     if (dir.length2 > 0.001) {
-      final angleY = math.atan2(dir.x, dir.z);
+      final angleY = math.atan2(dir.x, -dir.z);
       rootNode.rotation = vm.Quaternion.axisAngle(vm.Vector3(0, 1, 0), angleY);
     }
 
     // Open mouth wide in anticipation!
     final mouthOpen = math.sin(progress * math.pi * 0.5) * 0.7; // up to ~40 deg
     if (upperJawNode != null) {
-      upperJawNode!.rotation = vm.Quaternion.axisAngle(vm.Vector3(1, 0, 0), -mouthOpen);
+      upperJawNode!.rotation = vm.Quaternion.axisAngle(vm.Vector3(1, 0, 0), mouthOpen);
     }
 
     // Grow hungrier and larger
@@ -233,7 +233,7 @@ class AnimatedPiece {
     // Rapid chomp snapping cycle
     final chompCycle = math.sin(stateTime * 28.0) * math.exp(-stateTime * 4.0);
     if (upperJawNode != null) {
-      upperJawNode!.rotation = vm.Quaternion.axisAngle(vm.Vector3(1, 0, 0), chompCycle * 0.6);
+      upperJawNode!.rotation = vm.Quaternion.axisAngle(vm.Vector3(1, 0, 0), -chompCycle * 0.6);
     }
 
     // Wobble shake on head
