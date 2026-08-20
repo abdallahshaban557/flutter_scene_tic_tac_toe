@@ -106,3 +106,67 @@ when I click and X or O come down - the face should be facing forward and not ba
 ```text
 make the characters with the X and O be individual glbs and have them be in the scene
 ```
+
+---
+
+### Prompt 9
+*Timestamp: 2026-08-19 22:53:21 (-07:00)*
+
+```text
+I want to connec this repo to this remote https://github.com/abdallahshaban557/flutter_scene_checking_skills, and I want the remote repo name to change to flutter_scene_tic_tac_toe
+```
+
+---
+
+### Prompt 10
+*Timestamp: 2026-08-19 22:55:02 (-07:00)*
+
+```text
+fix read me to describe the flutter app - and that it uses scene - and what the game does
+```
+
+---
+
+### Prompt 11
+*Timestamp: 2026-08-19 22:59:49 (-07:00)*
+
+```text
+how is the AI playing tic tac toe with me?
+```
+
+---
+
+### Prompt 12
+*Timestamp: 2026-08-19 23:01:09 (-07:00)*
+
+```text
+remove the "Rest camera angle" button please
+```
+
+---
+
+### Prompt 13
+*Timestamp: 2026-08-19 23:07:17 (-07:00)*
+
+```text
+on smaller screens - i want to be able to see the whole actual screen - look how it is cropped now
+```
+
+---
+
+### Prompt 14
+*Timestamp: 2026-08-19 23:11:21 (-07:00)*
+
+```text
+remove the need for the grid map on the bottom right corner of the screen
+```
+
+---
+
+### Prompt 15
+*Timestamp: 2026-08-19 23:15:48 (-07:00)*
+
+```text
+dump all my prompts here into @[PROMPTS.md]
+```
+
