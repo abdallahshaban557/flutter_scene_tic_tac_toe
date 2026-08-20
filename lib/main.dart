@@ -161,6 +161,7 @@ class _TicTacToeGameScreenState extends State<TicTacToeGameScreen> {
           LayoutBuilder(
             builder: (context, constraints) {
               final viewSize = constraints.biggest;
+              _gameScene.updateViewport(viewSize);
               return Listener(
                 behavior: HitTestBehavior.translucent,
                 onPointerDown: (event) {

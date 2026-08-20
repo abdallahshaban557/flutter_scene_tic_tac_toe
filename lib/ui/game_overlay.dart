@@ -22,16 +22,16 @@ class GameOverlay extends StatelessWidget {
         children: [
           // 1. Top Section: Header, Mode Selector, Scoreboard & Status Banner
           Positioned(
-            top: 12,
+            top: 8,
             left: 16,
             right: 16,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildHeader(context),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 _buildScoreboard(context),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 _buildStatusBanner(context),
               ],
             ),
@@ -180,7 +180,7 @@ class GameOverlay extends StatelessWidget {
 
   Widget _buildScoreboard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A2E).withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(16),

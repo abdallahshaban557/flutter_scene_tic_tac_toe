@@ -24,6 +24,42 @@ class TicTacToe3DScene {
 
   TicTacToe3DScene({required this.gameController});
 
+  Size? _lastViewSize;
+
+  double calculateIdealDistance(Size viewSize) {
+    if (viewSize.width <= 0 || viewSize.height <= 0) return 7.2;
+    final aspect = viewSize.width / viewSize.height;
+    if (aspect >= 1.0) {
+      return 6.8;
+    }
+    // Scale distance inversely with aspect ratio on narrow/portrait screens
+    // so the entire 3D board remains fully visible without horizontal cropping.
+    return (6.8 / aspect).clamp(6.8, 14.8);
+  }
+
+  void updateViewport(Size viewSize) {
+    if (viewSize.width <= 0 || viewSize.height <= 0) return;
+    final oldAspect = _lastViewSize != null ? (_lastViewSize!.width / _lastViewSize!.height) : null;
+    final newAspect = viewSize.width / viewSize.height;
+    final isFirst = _lastViewSize == null;
+    _lastViewSize = viewSize;
+
+    if (_isLoaded && (isFirst || (oldAspect != null && (oldAspect - newAspect).abs() > 0.03))) {
+      final idealDist = calculateIdealDistance(viewSize);
+      if (orbitController != null) {
+        cameraNode.removeComponent(orbitController!);
+        orbitController = OrbitCameraController(
+          target: vm.Vector3(0, 0.1, 0),
+          distance: idealDist,
+          polar: 0.75,
+          azimuth: 0.0,
+          smoothing: 0.15,
+        );
+        cameraNode.addComponent(orbitController!);
+      }
+    }
+  }
+
   Future<void> load() async {
     // 1. Initialize static resources and load character GLBs
     await Scene.initializeStaticResources();
@@ -58,10 +94,11 @@ class TicTacToe3DScene {
       shadowMapResolution: 1024,
     );
 
-    // 4. Camera Node setup
+    // 4. Camera Node setup with responsive distance
+    final initialDist = _lastViewSize != null ? calculateIdealDistance(_lastViewSize!) : 7.2;
     orbitController = OrbitCameraController(
-      target: vm.Vector3(0, 0.2, 0),
-      distance: 7.2,
+      target: vm.Vector3(0, 0.1, 0),
+      distance: initialDist,
       polar: 0.75, // ~43 degrees downward view
       azimuth: 0.0,
       smoothing: 0.15,
@@ -70,7 +107,7 @@ class TicTacToe3DScene {
     cameraNode = Node(name: "MainCamera")
       ..addComponent(CameraComponent(activateOnMount: true))
       ..addComponent(orbitController!)
-      ..lookAtFrom(vm.Vector3(0, 5.2, -5.2), vm.Vector3(0, 0.2, 0));
+      ..lookAtFrom(vm.Vector3(0, 5.2, -5.2), vm.Vector3(0, 0.1, 0));
 
     scene.add(cameraNode);
 
@@ -249,10 +286,11 @@ class TicTacToe3DScene {
 
   void resetCamera() {
     if (orbitController != null) {
+      final dist = _lastViewSize != null ? calculateIdealDistance(_lastViewSize!) : 7.2;
       cameraNode.removeComponent(orbitController!);
       orbitController = OrbitCameraController(
-        target: vm.Vector3(0, 0.2, 0),
-        distance: 7.2,
+        target: vm.Vector3(0, 0.1, 0),
+        distance: dist,
         polar: 0.75,
         azimuth: 0.0,
         smoothing: 0.15,
